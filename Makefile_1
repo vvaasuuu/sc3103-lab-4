@@ -1,0 +1,48 @@
+# ============================================================
+#  Makefile for SC3103 Embedded Programming - Lab 4
+#  Multithreaded C Programming (Pthreads) + Socket Programming
+# ============================================================
+
+CC     = gcc
+CFLAGS = -Wall -g
+
+# Programs that use the Pthreads library
+THREAD_TARGETS = pthread1 pthread2 mutex1
+
+# Socket programs (server is threaded, client uses fork())
+SOCKET_TARGETS = server client
+
+TARGETS = $(THREAD_TARGETS) $(SOCKET_TARGETS)
+
+.PHONY: all threads sockets clean
+
+# Default target: build everything
+all: $(TARGETS)
+
+# Convenience groups
+threads: $(THREAD_TARGETS)
+sockets: $(SOCKET_TARGETS)
+
+# ---- Exercise A: two threads ----
+pthread1: pthread1.c
+	$(CC) $(CFLAGS) -o $@ $< -lpthread
+
+# ---- Exercise B: race condition ----
+pthread2: pthread2.c
+	$(CC) $(CFLAGS) -o $@ $< -lpthread
+
+# ---- Exercise C: mutex fix ----
+mutex1: mutex1.c
+	$(CC) $(CFLAGS) -o $@ $< -lpthread
+
+# ---- Socket exercise: threaded server (runs on the PC) ----
+server: server.c
+	$(CC) $(CFLAGS) -o $@ $< -lpthread
+
+# ---- Socket exercise: forking client (runs on the RPi) ----
+client: client.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+# ---- Housekeeping ----
+clean:
+	rm -f $(TARGETS)
